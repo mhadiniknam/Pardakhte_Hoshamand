@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد - قراردادهای هوشمند</title>
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.0/Vazirmatn-font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --success-color: #00b894;
+            --danger-color: #d63031;
+            --light-color: #f8f9fa;
+            --dark-color: #2d3436;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar {
+            background-color: white;
+            min-height: calc(100vh - 76px);
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            padding-top: 20px;
+        }
+        
+        .sidebar .nav-link {
+            color: var(--dark-color);
+            border-radius: 10px;
+            margin-bottom: 5px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #f0f2ff;
+            color: var(--primary-color);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .sidebar .nav-link i {
+            margin-left: 10px;
+            font-size: 18px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .stats-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stats-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .stats-icon.primary {
+            background-color: rgba(108, 92, 231, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .stats-icon.success {
+            background-color: rgba(0, 184, 148, 0.1);
+            color: var(--success-color);
+        }
+        
+        .stats-icon.danger {
+            background-color: rgba(214, 48, 49, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .stats-icon.warning {
+            background-color: rgba(253, 203, 110, 0.1);
+            color: #fdcb6e;
+        }
+        
+        .stats-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stats-label {
+            color: #636e72;
+            font-size: 14px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #e0e6ed;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            border-bottom: 2px solid #e0e6ed;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .badge {
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-signed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-completed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 500;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .user-info {
+            line-height: 1.2;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #636e72;
+        }
+        
+        .sandbox-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #636e72;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            color: #dfe6e9;
+            margin-bottom: 15px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner.active {
+            display: block;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                min-height: auto;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-file-earmark-text-fill text-primary"></i> قراردادهای هوشمند
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">خانه</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar">
+                        <div class="user-info">
+                            <p class="user-name mb-0">علی احمدی</p>
+                            <small class="user-role">کارفرما</small>
+                        </div>
+                    </div>
+                    <a href="/" class="btn btn-outline-primary ms-3">خروج</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 sidebar">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>داشبورد</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span>قراردادها</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/create-contract">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>ایجاد قرارداد</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-wallet2"></i>
+                            <span>تراکنش‌ها</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-shield-check"></i>
+                            <span>پرداخت‌های امانی</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-person-circle"></i>
+                            <span>پروفایل</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear"></i>
+                            <span>تنظیمات</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-10 col-md-9 content">
+                <div class="sandbox-notice">
+                    <i class="bi bi-info-circle"></i> حالت آزمایشی (سندباکس) - هیچ پرداخت واقعی انجام نمی‌شود
+                </div>
+                
+                <h2 class="mb-4">داشبورد</h2>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stats-card">
+                            <div class="stats-icon primary">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <div class="stats-value" id="totalContracts">0</div>
+                            <div class="stats-label">کل قراردادها</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stats-card">
+                            <div class="stats-icon success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="stats-value" id="completedContracts">0</div>
+                            <div class="stats-label">قراردادهای تکمیل شده</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stats-card">
+                            <div class="stats-icon warning">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="stats-value" id="inProgressContracts">0</div>
+                            <div class="stats-label">قراردادهای در جریان</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stats-card">
+                            <div class="stats-icon danger">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div class="stats-value" id="totalPayments">۰</div>
+                            <div class="stats-label">مبلغ کل پرداخت‌ها (تومان)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Contracts -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>قراردادهای اخیر</span>
+                        <a href="/dashboard" class="btn btn-sm btn-outline-primary">مشاهده همه</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>عنوان قرارداد</th>
+                                        <th>طرفین</th>
+                                        <th>تاریخ ایجاد</th>
+                                        <th>مبلغ (تومان)</th>
+                                        <th>وضعیت</th>
+                                        <th>عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contractsTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">در حال بارگذاری...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Escrow Payments -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>پرداخت‌های امانی</span>
+                        <a href="#" class="btn btn-sm btn-outline-primary">مشاهده همه</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>قرارداد</th>
+                                        <th>مبلغ (تومان)</th>
+                                        <th>تاریخ پرداخت</th>
+                                        <th>وضعیت</th>
+                                        <th>عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="escrowTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4">در حال بارگذاری...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activities -->
+                <div class="card">
+                    <div class="card-header">
+                        <span>فعالیت‌های اخیر</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="activity-item d-flex mb-4">
+                                <div class="activity-icon bg-primary bg-opacity-10 p-2 rounded-circle me-3">
+                                    <i class="bi bi-file-earmark-plus text-primary"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-1">قرارداد جدید "طراحی وب سایت شرکت" ایجاد شد</p>
+                                    <small class="text-muted">۲ ساعت پیش</small>
+                                </div>
+                            </div>
+                            <div class="activity-item d-flex mb-4">
+                                <div class="activity-icon bg-success bg-opacity-10 p-2 rounded-circle me-3">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-1">مریم رضایی قرارداد "طراحی وب سایت شرکت" را امضا کرد</p>
+                                    <small class="text-muted">۳ ساعت پیش</small>
+                                </div>
+                            </div>
+                            <div class="activity-item d-flex mb-4">
+                                <div class="activity-icon bg-warning bg-opacity-10 p-2 rounded-circle me-3">
+                                    <i class="bi bi-wallet2 text-warning"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-1">مبلغ ۵,۰۰۰,۰۰۰ تومان برای قرارداد "طراحی وب سایت شرکت" پرداخت شد</p>
+                                    <small class="text-muted">۴ ساعت پیش</small>
+                                </div>
+                            </div>
+                            <div class="activity-item d-flex">
+                                <div class="activity-icon bg-info bg-opacity-10 p-2 rounded-circle me-3">
+                                    <i class="bi bi-person-plus text-info"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-1">سارا محمدی به سیستم پیوست</p>
+                                    <small class="text-muted">۱ روز پیش</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">در حال پردازش...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        // Define API base URL - change this to match your server's address
+        const API_BASE_URL = 'http://localhost:3000';
+        
+        function loadDashboardData() {
+            // Show loading spinner
+            document.getElementById('loadingSpinner').classList.add('active');
+            
+            // Fetch contracts and payments
+            Promise.all([
+                fetch(`${API_BASE_URL}/api/contracts`).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                }),
+                fetch(`${API_BASE_URL}/api/escrow-payments`).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+            ])
+            .then(([contractsData, paymentsData]) => {
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').classList.remove('active');
+                
+                console.log('Contracts data:', contractsData);
+                console.log('Payments data:', paymentsData);
+                
+                if (contractsData.success) {
+                    updateStatsCards(contractsData.contracts);
+                    updateContractsTable(contractsData.contracts);
+                } else {
+                    showError('خطا در بارگذاری قراردادها: ' + (contractsData.message || 'خطای ناشناخته'));
+                }
+                
+                if (paymentsData.success) {
+                    updateEscrowTable(paymentsData.payments);
+                } else {
+                    showError('خطا در بارگذاری پرداخت‌ها: ' + (paymentsData.message || 'خطای ناشناخته'));
+                }
+            })
+            .catch(error => {
+                console.error('Error loading dashboard data:', error);
+                document.getElementById('loadingSpinner').classList.remove('active');
+                
+                // Show detailed error message
+                showError(`خطا در بارگذاری داده‌ها: ${error.message || 'خطای شبکه یا سرور'}`);
+            });
+        }
+        
+        function showError(message) {
+            // Create error element
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i> ${message}`;
+            
+            // Insert at the top of the content area
+            const contentArea = document.querySelector('.content');
+            contentArea.insertBefore(errorDiv, contentArea.firstChild);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+        
+        function updateStatsCards(contracts) {
+            // Calculate statistics
+            const totalContracts = contracts.length;
+            const completedContracts = contracts.filter(c => c.status === 'completed').length;
+            const inProgressContracts = contracts.filter(c => c.status === 'signed' || c.status === 'paid').length;
+            const totalPayments = contracts.reduce((sum, c) => sum + (c.paymentAmount || 0), 0);
+            
+            // Update stats cards
+            document.getElementById('totalContracts').textContent = totalContracts;
+            document.getElementById('completedContracts').textContent = completedContracts;
+            document.getElementById('inProgressContracts').textContent = inProgressContracts;
+            document.getElementById('totalPayments').textContent = totalPayments.toLocaleString('fa-IR');
+        }
+        
+        function updateContractsTable(contracts) {
+            const tableBody = document.getElementById('contractsTableBody');
+            
+            if (contracts.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <p>هیچ قراردادی یافت نشد</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Sort contracts by creation date (newest first)
+            const sortedContracts = [...contracts].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            
+            // Take only the first 5 for the dashboard
+            const recentContracts = sortedContracts.slice(0, 5);
+            
+            // Populate table
+            tableBody.innerHTML = recentContracts.map(contract => {
+                const statusClass = getStatusClass(contract.status);
+                const statusText = getStatusText(contract.status);
+                const createdDate = contract.createdAt 
+                    ? new Date(contract.createdAt).toLocaleDateString('fa-IR') 
+                    : '-';
+                const parties = `${contract.party1Name || ''}، ${contract.party2Name || ''}`;
+                const amount = contract.paymentAmount 
+                    ? contract.paymentAmount.toLocaleString('fa-IR') 
+                    : '0';
+                
+                return `
+                    <tr>
+                        <td>${contract.title || 'بدون عنوان'}</td>
+                        <td>${parties}</td>
+                        <td>${createdDate}</td>
+                        <td>${amount}</td>
+                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <a href="/contract?id=${contract.linkToken}" class="btn btn-sm btn-outline-primary">مشاهده</a>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function updateEscrowTable(payments) {
+            const tableBody = document.getElementById('escrowTableBody');
+            
+            if (payments.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="bi bi-wallet2"></i>
+                                <p>هیچ پرداخت امانی یافت نشد</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Sort payments by creation date (newest first)
+            const sortedPayments = [...payments].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            
+            // Get contracts for reference
+            fetch(`${API_BASE_URL}/api/contracts`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const contracts = data.contracts;
+                        
+                        // Populate table
+                        tableBody.innerHTML = sortedPayments.map(payment => {
+                            const statusClass = payment.status === 'released' ? 'status-completed' : 'status-paid';
+                            const statusText = payment.status === 'released' ? 'آزاد شده' : 'در انتظار تایید';
+                            const paidDate = payment.paidAt 
+                                ? new Date(payment.paidAt).toLocaleDateString('fa-IR') 
+                                : '-';
+                            
+                            // Find contract title
+                            const contract = contracts.find(c => c.id === payment.contractId);
+                            const contractTitle = contract ? contract.title : 'قرارداد نامشخص';
+                            
+                            // Create action button
+                            let actionButton = '';
+                            if (payment.status === 'paid') {
+                                actionButton = `
+                                    <button class="btn btn-sm btn-success release-payment" 
+                                            data-payment-id="${payment.id}">
+                                        تایید و آزادسازی
+                                    </button>
+                                `;
+                            } else {
+                                actionButton = `
+                                    <a href="#" class="btn btn-sm btn-outline-primary">جزئیات</a>
+                                `;
+                            }
+                            
+                            return `
+                                <tr>
+                                    <td>${contractTitle}</td>
+                                    <td>${payment.amount.toLocaleString('fa-IR')}</td>
+                                    <td>${paidDate}</td>
+                                    <td><span class="badge ${statusClass}">${statusText}</span></td>
+                                    <td>${actionButton}</td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+                });
+        }
+        
+        function getStatusClass(status) {
+            const statusMap = {
+                'draft': 'status-pending',
+                'signed': 'status-signed',
+                'paid': 'status-paid',
+                'completed': 'status-completed',
+                'cancelled': 'status-cancelled'
+            };
+            return statusMap[status] || 'status-pending';
+        }
+        
+        function getStatusText(status) {
+            const statusMap = {
+                'draft': 'پیشنویس',
+                'signed': 'امضا شده',
+                'paid': 'پرداخت شده',
+                'completed': 'تکمیل شده',
+                'cancelled': 'لغو شده'
+            };
+            return statusMap[status] || status;
+        }
+        
+        function setupEventListeners() {
+            // Handle approve and release button clicks
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('release-payment')) {
+                    const paymentId = event.target.getAttribute('data-payment-id');
+                    
+                    if (confirm('آیا از آزادسازی مبلغ اطمینان دارید؟')) {
+                        releaseEscrowPayment(paymentId);
+                    }
+                }
+            });
+        }
+        
+        function releaseEscrowPayment(paymentId) {
+            // Show loading spinner
+            document.getElementById('loadingSpinner').classList.add('active');
+            
+            fetch(`${API_BASE_URL}/api/escrow/${paymentId}/release`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').classList.remove('active');
+                
+                if (data.success) {
+                    alert('مبلغ با موفقیت آزاد شد');
+                    // Reload dashboard data
+                    loadDashboardData();
+                } else {
+                    alert(data.message || 'خطا در آزادسازی مبلغ');
+                }
+            })
+            .catch(error => {
+                console.error('Error releasing escrow payment:', error);
+                document.getElementById('loadingSpinner').classList.remove('active');
+                alert('خطا در ارتباط با سرور: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>

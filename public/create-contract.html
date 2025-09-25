@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد قرارداد جدید</title>
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.0/Vazirmatn-font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --success-color: #00b894;
+            --danger-color: #d63031;
+            --light-color: #f8f9fa;
+            --dark-color: #2d3436;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .contract-editor {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .contract-textarea {
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            line-height: 1.8;
+            min-height: 400px;
+            width: 100%;
+            resize: vertical;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #e0e6ed;
+            padding: 12px 15px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        
+        .preview-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .preview-content {
+            border: 1px dashed #dfe6e9;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 200px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+        
+        .sandbox-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e0e6ed;
+            color: #636e72;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .step.active .step-circle {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .step-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .step-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e6ed;
+            z-index: 1;
+        }
+        
+        .payment-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .payment-option {
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            background-color: #f8f9ff;
+        }
+        
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background-color: #f0f2ff;
+        }
+        
+        .generated-link {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: monospace;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-file-earmark-text-fill text-primary"></i> قراردادهای هوشمند
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">خانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">داشبورد</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="/" class="btn btn-outline-primary ms-2">بازگشت</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="sandbox-notice">
+            <i class="bi bi-info-circle"></i> حالت آزمایشی (سندباکس) - هیچ پرداخت واقعی انجام نمی‌شود
+        </div>
+        
+        <h1 class="mb-4">ایجاد قرارداد جدید</h1>
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step-line"></div>
+            <div class="step active" id="step1">
+                <div class="step-circle">1</div>
+                <div class="step-title">اطلاعات پایه</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-circle">2</div>
+                <div class="step-title">متن قرارداد</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-circle">3</div>
+                <div class="step-title">پرداخت</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-circle">4</div>
+                <div class="step-title">تایید نهایی</div>
+            </div>
+        </div>
+        
+        <!-- Step 1: Basic Information -->
+        <div id="step1Content" class="contract-editor">
+            <h3 class="mb-4">اطلاعات پایه قرارداد</h3>
+            <form id="basicInfoForm">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="contractTitle" class="form-label">عنوان قرارداد</label>
+                        <input type="text" class="form-control" id="contractTitle" placeholder="عنوان قرارداد را وارد کنید" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="contractType" class="form-label">نوع قرارداد</label>
+                        <select class="form-select" id="contractType" required>
+                            <option value="">انتخاب کنید</option>
+                            <option value="freelance">قرارداد فریلنسری</option>
+                            <option value="rent">قرارداد اجاره</option>
+                            <option value="service">قرارداد خدمات</option>
+                            <option value="sales">قرارداد فروش</option>
+                            <option value="partnership">قرارداد مشارکت</option>
+                            <option value="custom">قرارداد سفارشی</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="party1Name" class="form-label">نام طرف اول</label>
+                        <input type="text" class="form-control" id="party1Name" placeholder="نام کامل طرف اول" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="party2Name" class="form-label">نام طرف دوم</label>
+                        <input type="text" class="form-control" id="party2Name" placeholder="نام کامل طرف دوم" required>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="party1Email" class="form-label">ایمیل طرف اول</label>
+                        <input type="email" class="form-control" id="party1Email" placeholder="ایمیل طرف اول">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="party2Email" class="form-label">ایمیل طرف دوم</label>
+                        <input type="email" class="form-control" id="party2Email" placeholder="ایمیل طرف دوم">
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">تاریخ شروع</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">تاریخ پایان</label>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" id="nextToStep2">بعدی <i class="bi bi-arrow-left ms-2"></i></button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Step 2: Contract Text -->
+        <div id="step2Content" class="contract-editor" style="display: none;">
+            <h3 class="mb-4">متن قرارداد</h3>
+            <p class="mb-4">متن قرارداد را در زیر ویرایش کنید. می‌توانید از متغیرهای استفاده کنید که به صورت خودکار جایگزین می‌شوند:</p>
+            
+            <div class="mb-3">
+                <div class="badge bg-primary me-2 mb-2">{party1_name}</div>
+                <div class="badge bg-primary me-2 mb-2">{party2_name}</div>
+                <div class="badge bg-primary me-2 mb-2">{start_date}</div>
+                <div class="badge bg-primary me-2 mb-2">{end_date}</div>
+                <div class="badge bg-primary me-2 mb-2">{contract_title}</div>
+                <div class="badge bg-primary me-2 mb-2">{amount}</div>
+            </div>
+            
+            <textarea class="contract-textarea" id="contractText" placeholder="متن قرارداد را اینجا وارد کنید..."></textarea>
+            
+            <div class="preview-section mt-4">
+                <h4 class="preview-title">پیش‌نمایش قرارداد</h4>
+                <div class="preview-content" id="contractPreview">
+                    متن قرارداد در اینجا نمایش داده می‌شود...
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-primary" id="backToStep1"><i class="bi bi-arrow-right me-2"></i> قبلی</button>
+                <button type="button" class="btn btn-primary" id="nextToStep3">بعدی <i class="bi bi-arrow-left ms-2"></i></button>
+            </div>
+        </div>
+        
+        <!-- Step 3: Payment -->
+        <div id="step3Content" class="payment-section" style="display: none;">
+            <h3 class="mb-4">تنظیمات پرداخت</h3>
+            
+            <div class="payment-option" id="noPaymentOption">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentOption" id="noPayment" value="none">
+                    <label class="form-check-label" for="noPayment">
+                        <strong>بدون پرداخت</strong>
+                        <p class="mb-0 text-muted">این قرارداد نیازی به پرداخت مالی ندارد</p>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="payment-option" id="escrowPaymentOption">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentOption" id="escrowPayment" value="escrow">
+                    <label class="form-check-label" for="escrowPayment">
+                        <strong>پرداخت امانی</strong>
+                        <p class="mb-0 text-muted">مبلغ به صورت امانی نزد ما نگهداری می‌شود تا پس از اجرای کامل قرارداد به طرف مقابل پرداخت گردد</p>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="payment-option" id="directPaymentOption">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="paymentOption" id="directPayment" value="direct">
+                    <label class="form-check-label" for="directPayment">
+                        <strong>پرداخت مستقیم</strong>
+                        <p class="mb-0 text-muted">مبلغ به صورت مستقیم به طرف مقابل پرداخت می‌شود</p>
+                    </label>
+                </div>
+            </div>
+            
+            <div id="paymentDetails" style="display: none;">
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <label for="paymentAmount" class="form-label">مبلغ (تومان)</label>
+                        <input type="number" class="form-control" id="paymentAmount" placeholder="مبلغ را وارد کنید">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="paymentDeadline" class="form-label">مهلت پرداخت</label>
+                        <input type="date" class="form-control" id="paymentDeadline">
+                    </div>
+                </div>
+                
+                <div class="mb-3 mt-3">
+                    <label for="paymentDescription" class="form-label">توضیحات پرداخت</label>
+                    <textarea class="form-control" id="paymentDescription" rows="3" placeholder="توضیحات مربوط به پرداخت را وارد کنید"></textarea>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-outline-primary" id="backToStep2"><i class="bi bi-arrow-right me-2"></i> قبلی</button>
+                <button type="button" class="btn btn-primary" id="nextToStep4">بعدی <i class="bi bi-arrow-left ms-2"></i></button>
+            </div>
+        </div>
+        
+        <!-- Step 4: Final Confirmation -->
+        <div id="step4Content" class="contract-editor" style="display: none;">
+            <h3 class="mb-4">تایید نهایی و ایجاد لینک</h3>
+            
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                پس از تایید نهایی، یک لینک اختصاصی برای قرارداد شما ایجاد می‌شود که می‌توانید آن را برای طرف مقابل ارسال کنید.
+            </div>
+            
+            <div class="mb-4">
+                <h5>خلاصه قرارداد:</h5>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        عنوان قرارداد
+                        <span id="summaryTitle" class="badge bg-primary rounded-pill">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        طرفین قرارداد
+                        <span id="summaryParties" class="badge bg-primary rounded-pill">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        نوع قرارداد
+                        <span id="summaryType" class="badge bg-primary rounded-pill">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        روش پرداخت
+                        <span id="summaryPayment" class="badge bg-primary rounded-pill">-</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" id="confirmTerms">
+                <label class="form-check-label" for="confirmTerms">
+                    من شرایط و ضوابط استفاده از سیستم را می‌پذیرم و مسئولیت محتوای قرارداد را بر عهده می‌گیرم.
+                </label>
+            </div>
+            
+            <div id="generatedLinkSection" style="display: none;">
+                <h5>لینک اختصاصی قرارداد:</h5>
+                <div class="generated-link" id="generatedLink">-</div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" id="copyLinkBtn">
+                        <i class="bi bi-clipboard me-1"></i> کپی لینک
+                    </button>
+                    <button class="btn btn-outline-primary" id="shareLinkBtn">
+                        <i class="bi bi-share me-1"></i> اشتراک‌گذاری
+                    </button>
+                    <a href="/" class="btn btn-primary">ایجاد قرارداد جدید</a>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-primary" id="backToStep3"><i class="bi bi-arrow-right me-2"></i> قبلی</button>
+                <button type="button" class="btn btn-primary" id="createContractBtn" disabled>ایجاد قرارداد <i class="bi bi-arrow-left ms-2"></i></button>
+            </div>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">در حال ایجاد قرارداد...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const templateType = urlParams.get('template');
+            
+            // Set contract type from URL parameter
+            if (templateType) {
+                document.getElementById('contractType').value = templateType;
+                loadContractTemplate(templateType);
+            }
+            
+            // Step navigation
+            const steps = {
+                1: { content: 'step1Content', next: 'nextToStep2', back: null },
+                2: { content: 'step2Content', next: 'nextToStep3', back: 'backToStep1' },
+                3: { content: 'step3Content', next: 'nextToStep4', back: 'backToStep2' },
+                4: { content: 'step4Content', next: null, back: 'backToStep3' }
+            };
+            
+            let currentStep = 1;
+            
+            // Function to show step
+            function showStep(stepNumber) {
+                // Hide all step contents
+                Object.values(steps).forEach(step => {
+                    document.getElementById(step.content).style.display = 'none';
+                });
+                
+                // Show current step content
+                document.getElementById(steps[stepNumber].content).style.display = 'block';
+                
+                // Update step indicators
+                for (let i = 1; i <= 4; i++) {
+                    const stepElement = document.getElementById(`step${i}`);
+                    if (i < stepNumber) {
+                        stepElement.classList.add('completed');
+                        stepElement.classList.remove('active');
+                    } else if (i === stepNumber) {
+                        stepElement.classList.add('active');
+                        stepElement.classList.remove('completed');
+                    } else {
+                        stepElement.classList.remove('active', 'completed');
+                    }
+                }
+                
+                // If moving to step 4, update summary
+                if (stepNumber === 4) {
+                    updateSummary();
+                }
+                
+                currentStep = stepNumber;
+            }
+            
+            // Next step buttons
+            document.getElementById('nextToStep2').addEventListener('click', function() {
+                if (validateStep1()) {
+                    showStep(2);
+                    updateContractPreview();
+                }
+            });
+            
+            document.getElementById('nextToStep3').addEventListener('click', function() {
+                if (validateStep2()) {
+                    showStep(3);
+                }
+            });
+            
+            document.getElementById('nextToStep4').addEventListener('click', function() {
+                if (validateStep3()) {
+                    showStep(4);
+                }
+            });
+            
+            // Back step buttons
+            document.getElementById('backToStep1').addEventListener('click', function() {
+                showStep(1);
+            });
+            
+            document.getElementById('backToStep2').addEventListener('click', function() {
+                showStep(2);
+            });
+            
+            document.getElementById('backToStep3').addEventListener('click', function() {
+                showStep(3);
+            });
+            
+            // Contract type change
+            document.getElementById('contractType').addEventListener('change', function() {
+                loadContractTemplate(this.value);
+                updateContractPreview();
+            });
+            
+            // Contract text change
+            document.getElementById('contractText').addEventListener('input', updateContractPreview);
+            
+            // Payment option selection
+            document.querySelectorAll('input[name="paymentOption"]').forEach(option => {
+                option.addEventListener('change', function() {
+                    // Update selected payment option
+                    document.querySelectorAll('.payment-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    if (this.checked) {
+                        this.closest('.payment-option').classList.add('selected');
+                        
+                        // Show/hide payment details
+                        const paymentDetails = document.getElementById('paymentDetails');
+                        if (this.value !== 'none') {
+                            paymentDetails.style.display = 'block';
+                        } else {
+                            paymentDetails.style.display = 'none';
+                        }
+                    }
+                });
+            });
+            
+            // Terms confirmation
+            document.getElementById('confirmTerms').addEventListener('change', function() {
+                const createBtn = document.getElementById('createContractBtn');
+                createBtn.disabled = !this.checked;
+            });
+            
+            // Create contract button
+            document.getElementById('createContractBtn').addEventListener('click', function() {
+                createContract();
+            });
+            
+            // Copy link button
+            document.getElementById('copyLinkBtn').addEventListener('click', function() {
+                const linkText = document.getElementById('generatedLink').innerText;
+                navigator.clipboard.writeText(linkText).then(() => {
+                    this.innerHTML = '<i class="bi bi-check me-1"></i> کپی شد';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-clipboard me-1"></i> کپی لینک';
+                    }, 2000);
+                });
+            });
+            
+            // Share link button
+            document.getElementById('shareLinkBtn').addEventListener('click', function() {
+                const linkText = document.getElementById('generatedLink').innerText;
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'قرارداد برای امضا',
+                        text: 'لطفاً این قرارداد را امضا کنید',
+                        url: linkText
+                    });
+                } else {
+                    // Fallback for browsers that don't support Web Share API
+                    alert('لینک کپی شد: ' + linkText);
+                    navigator.clipboard.writeText(linkText);
+                }
+            });
+            
+            // Load contract template
+            function loadContractTemplate(type) {
+                const templates = {
+                    freelance: `قرارداد فریلنسری بین {party1_name} (کارفرما) و {party2_name} (فریلنسر)
+
+موضوع قرارداد: {contract_title}
+
+مدت قرارداد: از تاریخ {start_date} تا {end_date}
+
+تعهدات فریلنسر:
+1. انجام پروژه مطابق مشخصات مندرج در پیوست
+2. تحویل پروژه در موعد مقرر
+3. رفع اشکالات و پشتیبانی پس از تحویل
+
+تعهدات کارفرما:
+1. پرداخت مبلغ {amount} تومان در موعد مقرر
+2. ارائه اطلاعات و منابع لازم برای انجام پروژه
+3. همکاری با فریلنسر برای پیشبرد پروژه
+
+نحوه پرداخت:
+- مبلغ {amount} تومان به صورت امانی نزد سیستم نگهداری می‌شود
+- پس از تحویل و تایید نهایی پروژه، مبلغ به فریلنسر پرداخت می‌گردد
+
+فسخ قرارداد:
+هر یک از طرفین می‌توانند در صورت عدم تعهد طرف مقابل، این قرارداد را فسخ نمایند.`,
+                    
+                    rent: `قرارداد اجاره بین {party1_name} (موجر) و {party2_name} (مستاجر)
+
+موضوع قرارداد: {contract_title}
+
+مدت قرارداد: از تاریخ {start_date} تا {end_date}
+
+موضوع اجاره:
+[توضیحات مربوط به مورد اجاره]
+
+تعهدات مالک:
+1. تحویل مورد اجاره در تاریخ مقرر
+2. رفع عیوب و نقص‌های موجود در مورد اجاره
+3. عدم مزاحمت برای مستاجر در طول مدت اجاره
+
+تعهدات مستاجر:
+1. پرداخت مبلغ {amount} تومان به صورت ماهانه
+2. استفاده از مورد اجاره مطابق با مقررات
+3. عدم ایجاد تغییر در مورد اجاره بدون اجازه مالک
+
+نحوه پرداخت:
+- مبلغ {amount} تومان به صورت ماهانه پرداخت می‌شود
+- مبلغ ودیعه به صورت امانی نزد سیستم نگهداری می‌شود
+
+فسخ قرارداد:
+در صورت تخلف از تعهدات، طرف متخلف ملزم به پرداخت خسارت می‌باشد.`,
+                    
+                    service: `قرارداد ارائه خدمات بین {party1_name} (سفارش‌دهنده) و {party2_name} (ارائه‌دهنده خدمات)
+
+موضوع قرارداد: {contract_title}
+
+مدت قرارداد: از تاریخ {start_date} تا {end_date}
+
+شرح خدمات:
+[توضیحات مربوط به خدمات]
+
+تعهدات ارائه‌دهنده خدمات:
+1. ارائه خدمات مطابق استانداردهای تعیین شده
+2. رعایت زمان‌بندی مقرر برای ارائه خدمات
+3. حفظ محرمانگی اطلاعات سفارش‌دهنده
+
+تعهدات سفارش‌دهنده:
+1. پرداخت مبلغ {amount} تومان طبق زمان‌بندی
+2. ارائه اطلاعات و امکانات لازم برای ارائه خدمات
+3. همکاری با ارائه‌دهنده خدمات
+
+نحوه پرداخت:
+- مبلغ {amount} تومان به صورت اقساطی پرداخت می‌شود
+- بخشی از مبلغ به صورت امانی نزد سیستم نگهداری می‌شود
+
+فسخ قرارداد:
+هر یک از طرفین می‌توانند با اطلاع قبلی، این قرارداد را فسخ نمایند.`,
+                    
+                    sales: `قرارداد فروش بین {party1_name} (فروشنده) و {party2_name} (خریدار)
+
+موضوع قرارداد: {contract_title}
+
+تاریخ قرارداد: {start_date}
+
+کالای مورد معامله:
+[توضیحات مربوط به کالا]
+
+تعهدات فروشنده:
+1. تحویل کالا مطابق مشخصات مندرج در قرارداد
+2. تضمین سلامت و اصالت کالا
+3. ارائه گارانتی و خدمات پس از فروش
+
+تعهدات خریدار:
+1. پرداخت مبلغ {amount} تومان در موعد مقرر
+2. تحویل کالا در محل و زمان مقرر
+3. پرداخت هزینه‌های انتقال و حمل
+
+نحوه پرداخت:
+- مبلغ {amount} تومان به صورت نقدی یا اقساطی پرداخت می‌شود
+- بخشی از مبلغ به صورت امانی نزد سیستم نگهداری می‌شود
+
+فسخ قرارداد:
+در صورت عدم تحویل کالا مطابق مشخصات، خریدار می‌تواند قرارداد را فسخ نماید.`,
+                    
+                    partnership: `قرارداد مشارکت بین {party1_name} و {party2_name}
+
+موضوع قرارداد: {contract_title}
+
+مدت قرارداد: از تاریخ {start_date} تا {end_date}
+
+شرح مشارکت:
+[توضیحات مربوط به مشارکت]
+
+تعهدات طرف اول ({party1_name}):
+1. ارائه منابع و امکانات مورد نیاز
+2. مشارکت فعال در اجرای پروژه
+3. رعایت مقررات و قوانین مربوط به پروژه
+
+تعهدات طرف دوم ({party2_name}):
+1. ارائه تخصص و دانش فنی مورد نیاز
+2. مشارکت فعال در اجرای پروژه
+3. رعایت مقررات و قوانین مربوط به پروژه
+
+نحوه پرداخت:
+- سود حاصل از مشارکت به صورت {amount} تومان تقسیم می‌شود
+- مبلغ سرمایه‌گذاری اولیه به صورت امانی نزد سیستم نگهداری می‌شود
+
+فسخ قرارداد:
+در صورت عدم تعهد هر یک از طرفین، قرارداد قابل فسخ می‌باشد.`,
+                    
+                    custom: `قرارداد بین {party1_name} و {party2_name}
+
+موضوع قرارداد: {contract_title}
+
+مدت قرارداد: از تاریخ {start_date} تا {end_date}
+
+متن قرارداد:
+[لطفاً متن قرارداد خود را در این قسمت وارد کنید]
+
+تعهدات طرف اول ({party1_name}):
+[تعهدات طرف اول را وارد کنید]
+
+تعهدات طرف دوم ({party2_name}):
+[تعهدات طرف دوم را وارد کنید]
+
+نحوه پرداخت:
+[نحوه پرداخت را وارد کنید]
+
+فسخ قرارداد:
+[شرایط فسخ قرارداد را وارد کنید]`
+                };
+                
+                if (templates[type]) {
+                    document.getElementById('contractText').value = templates[type];
+                }
+            }
+            
+            // Update contract preview
+            function updateContractPreview() {
+                const contractText = document.getElementById('contractText').value;
+                const party1Name = document.getElementById('party1Name').value || '[طرف اول]';
+                const party2Name = document.getElementById('party2Name').value || '[طرف دوم]';
+                const startDate = document.getElementById('startDate').value || '[تاریخ شروع]';
+                const endDate = document.getElementById('endDate').value || '[تاریخ پایان]';
+                const contractTitle = document.getElementById('contractTitle').value || '[عنوان قرارداد]';
+                const amount = document.getElementById('paymentAmount').value || '[مبلغ]';
+                
+                let previewText = contractText
+                    .replace(/{party1_name}/g, party1Name)
+                    .replace(/{party2_name}/g, party2Name)
+                    .replace(/{start_date}/g, startDate)
+                    .replace(/{end_date}/g, endDate)
+                    .replace(/{contract_title}/g, contractTitle)
+                    .replace(/{amount}/g, amount);
+                
+                document.getElementById('contractPreview').textContent = previewText;
+            }
+            
+            // Validate step 1
+            function validateStep1() {
+                const requiredFields = [
+                    'contractTitle',
+                    'contractType',
+                    'party1Name',
+                    'party2Name',
+                    'startDate'
+                ];
+                
+                let isValid = true;
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                return isValid;
+            }
+            
+            // Validate step 2
+            function validateStep2() {
+                const contractText = document.getElementById('contractText').value;
+                
+                if (!contractText.trim()) {
+                    alert('لطفاً متن قرارداد را وارد کنید');
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Validate step 3
+            function validateStep3() {
+                const selectedPayment = document.querySelector('input[name="paymentOption"]:checked');
+                
+                if (!selectedPayment) {
+                    alert('لطفاً روش پرداخت را انتخاب کنید');
+                    return false;
+                }
+                
+                if (selectedPayment.value !== 'none') {
+                    const amount = document.getElementById('paymentAmount').value;
+                    
+                    if (!amount || amount <= 0) {
+                        alert('لطفاً مبلغ پرداخت را وارد کنید');
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            // Update summary in step 4
+            function updateSummary() {
+                document.getElementById('summaryTitle').textContent = document.getElementById('contractTitle').value;
+                document.getElementById('summaryParties').textContent = 
+                    `${document.getElementById('party1Name').value} و ${document.getElementById('party2Name').value}`;
+                
+                const contractType = document.getElementById('contractType');
+                document.getElementById('summaryType').textContent = contractType.options[contractType.selectedIndex].text;
+                
+                const selectedPayment = document.querySelector('input[name="paymentOption"]:checked');
+                if (selectedPayment) {
+                    const paymentTexts = {
+                        'none': 'بدون پرداخت',
+                        'escrow': 'پرداخت امانی',
+                        'direct': 'پرداخت مستقیم'
+                    };
+                    document.getElementById('summaryPayment').textContent = paymentTexts[selectedPayment.value];
+                } else {
+                    document.getElementById('summaryPayment').textContent = '-';
+                }
+            }
+            
+            // Create contract
+            function createContract() {
+                // Show loading spinner
+                document.getElementById('loadingSpinner').classList.add('active');
+                
+                // Collect all contract data
+                const contractData = {
+                    title: document.getElementById('contractTitle').value,
+                    type: document.getElementById('contractType').value,
+                    party1Name: document.getElementById('party1Name').value,
+                    party2Name: document.getElementById('party2Name').value,
+                    party1Email: document.getElementById('party1Email').value,
+                    party2Email: document.getElementById('party2Email').value,
+                    startDate: document.getElementById('startDate').value,
+                    endDate: document.getElementById('endDate').value,
+                    text: document.getElementById('contractText').value,
+                    paymentOption: document.querySelector('input[name="paymentOption"]:checked').value,
+                    paymentAmount: document.getElementById('paymentAmount').value,
+                    paymentDeadline: document.getElementById('paymentDeadline').value,
+                    paymentDescription: document.getElementById('paymentDescription').value
+                };
+                
+                // Send data to server
+                fetch('/api/contracts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(contractData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    
+                    if (data.success) {
+                        // Display the generated link
+                        document.getElementById('generatedLink').textContent = data.link;
+                        document.getElementById('generatedLinkSection').style.display = 'block';
+                        
+                        // Hide the create button
+                        document.getElementById('createContractBtn').style.display = 'none';
+                        
+                        // Show success message
+                        alert('قرارداد با موفقیت ایجاد شد!');
+                    } else {
+                        alert(data.message || 'خطا در ایجاد قرارداد');
+                    }
+                })
+                .catch(error => {
+                    // Hide loading spinner
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    console.error('Error creating contract:', error);
+                    alert('خطا در ارتباط با سرور');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

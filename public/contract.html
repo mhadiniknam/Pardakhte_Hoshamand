@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاهده و امضای قرارداد</title>
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.0/Vazirmatn-font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --success-color: #00b894;
+            --danger-color: #d63031;
+            --light-color: #f8f9fa;
+            --dark-color: #2d3436;
+        }
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+        }
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+        .btn-success:hover {
+            background-color: #00a085;
+        }
+        .contract-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .contract-header {
+            border-bottom: 1px solid #e0e6ed;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .contract-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .contract-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #636e72;
+        }
+        .meta-item i {
+            margin-left: 5px;
+            color: var(--primary-color);
+        }
+        .contract-content {
+            line-height: 1.8;
+            white-space: pre-wrap;
+            margin-bottom: 30px;
+        }
+        .version-selector {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .version-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .version-badge.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .version-badge:not(.active) {
+            background-color: #e9ecef;
+            color: #636e72;
+        }
+        .version-badge:hover:not(.active) {
+            background-color: #dee2e6;
+        }
+        .version-info {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .contract-parties {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .party-info {
+            margin-bottom: 15px;
+        }
+        .party-info:last-child {
+            margin-bottom: 0;
+        }
+        .party-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        .signature-section {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .signature-pad {
+            border: 2px dashed #dfe6e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: white;
+            text-align: center;
+        }
+        .signature-pad canvas {
+            width: 100%;
+            height: auto;
+            max-width: 400px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            background-color: white;
+            cursor: crosshair;
+        }
+        .signature-placeholder {
+            color: #b2bec3;
+            font-size: 18px;
+        }
+        .payment-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .payment-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .payment-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .payment-description {
+            color: #636e72;
+            margin-bottom: 15px;
+        }
+        .payment-deadline {
+            display: flex;
+            align-items: center;
+            color: #636e72;
+        }
+        .payment-deadline i {
+            margin-left: 5px;
+            color: var(--primary-color);
+        }
+        .sandbox-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-signed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-completed {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #e0e6ed;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(108, 92, 231, 0.25);
+        }
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        .contract-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner.active {
+            display: block;
+        }
+        /* Comments Section Styles */
+        .comments-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e6ed;
+            padding-bottom: 15px;
+        }
+        .comment {
+            border-bottom: 1px solid #e0e6ed;
+            padding: 15px 0;
+        }
+        .comment:last-child {
+            border-bottom: none;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .comment-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .comment-date {
+            font-size: 12px;
+            color: #636e72;
+        }
+        .comment-content {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+        .comment-action {
+            font-size: 14px;
+            color: #636e72;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .comment-action:hover {
+            color: var(--primary-color);
+        }
+        .comment-form {
+            margin-top: 20px;
+        }
+        .comment-reply {
+            margin-right: 30px;
+            border-right: 2px solid #e0e6ed;
+            padding-right: 15px;
+        }
+        .replies-toggle {
+            font-size: 14px;
+            color: var(--primary-color);
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .version-diff {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #e0e6ed;
+        }
+        .diff-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        .diff-content {
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .diff-added {
+            color: var(--success-color);
+            background-color: rgba(0, 184, 148, 0.1);
+        }
+        .diff-removed {
+            color: var(--danger-color);
+            background-color: rgba(214, 48, 49, 0.1);
+        }
+        @media (max-width: 768px) {
+            .contract-actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .version-selector {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-file-earmark-text-fill text-primary"></i> قراردادهای هوشمند
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">خانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">داشبورد</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container my-5">
+        <div class="sandbox-notice">
+            <i class="bi bi-info-circle"></i> حالت آزمایشی (سندباکس) - هیچ پرداخت واقعی انجام نمی‌شود
+        </div>
+        <div class="contract-container">
+            <div class="contract-header">
+                <div class="d-flex justify-content-between align-items-start flex-wrap">
+                    <div>
+                        <h1 class="contract-title" id="contractTitle">در حال بارگذاری...</h1>
+                        <div class="contract-meta">
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                <span id="contractDate">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span id="contractType">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-clock-history"></i>
+                                <span id="contractDuration">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-badge status-pending" id="contractStatus">در حال بارگذاری</span>
+                    </div>
+                </div>
+            </div>
+            <div class="contract-content" id="contractContent">
+                در حال بارگذاری محتوای قرارداد...
+            </div>
+            <div class="contract-parties">
+                <h4 class="mb-3">طرفین قرارداد</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="party-info">
+                            <div class="party-title">طرف اول</div>
+                            <div id="party1Name">-</div>
+                            <div id="party1Email">-</div>
+                            <div class="mt-2">
+                                <span class="status-badge status-pending" id="party1Status">در انتظار امضا</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="party-info">
+                            <div class="party-title">طرف دوم</div>
+                            <div id="party2Name">-</div>
+                            <div id="party2Email">-</div>
+                            <div class="mt-2">
+                                <span class="status-badge status-pending" id="party2Status">در انتظار امضا</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <div class="comments-header">
+                <h3>نظرات و بازبینی</h3>
+                <button class="btn btn-sm btn-primary" id="addCommentBtn">
+                    <i class="bi bi-plus-circle me-1"></i> افزودن نظر
+                </button>
+            </div>
+            <div id="commentsList">
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-chat-square-text fs-1"></i>
+                    <p class="mt-2">در حال بارگذاری نظرات...</p>
+                </div>
+            </div>
+            <div class="comment-form" id="commentForm" style="display: none;">
+                <h5 class="mb-3">افزودن نظر جدید</h5>
+                <form id="newCommentForm">
+                    <div class="mb-3">
+                        <label for="commentText" class="form-label">متن نظر</label>
+                        <textarea class="form-control" id="commentText" rows="4" placeholder="نظر خود را اینجا بنویسید..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="commentType" class="form-label">نوع نظر</label>
+                        <select class="form-select" id="commentType">
+                            <option value="general">عمومی</option>
+                            <option value="suggestion">پیشنهاد</option>
+                            <option value="correction">تصحیح</option>
+                            <option value="approval">تایید</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary" id="cancelCommentBtn">انصراف</button>
+                        <button type="submit" class="btn btn-primary">ثبت نظر</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="signature-section">
+            <h3 class="mb-4">امضای قرارداد</h3>
+            <div class="signature-pad">
+                <canvas id="signatureCanvas"></canvas>
+                <p class="signature-placeholder mt-3">لطفاً در اینجا امضا کنید</p>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-secondary" id="clearSignatureBtn">
+                    <i class="bi bi-eraser me-1"></i> پاک کردن امضا
+                </button>
+                <button type="button" class="btn btn-success" id="signContractBtn">
+                    <i class="bi bi-check-circle me-1"></i> امضای قرارداد
+                </button>
+            </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="payment-section">
+            <h3 class="mb-4">اطلاعات پرداخت</h3>
+            <div class="payment-info">
+                <div class="payment-amount" id="paymentAmount">0 تومان</div>
+                <div class="payment-description" id="paymentDescription">-</div>
+                <div class="payment-deadline">
+                    <i class="bi bi-calendar-check"></i>
+                    <span id="paymentDeadline">-</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="payerName" class="form-label">نام پرداخت کننده</label>
+                <input type="text" class="form-control" id="payerName" placeholder="نام خود را وارد کنید" required>
+            </div>
+            <div class="mb-3">
+                <label for="payerEmail" class="form-label">ایمیل</label>
+                <input type="email" class="form-control" id="payerEmail" placeholder="ایمیل خود را وارد کنید" required>
+            </div>
+            <div class="mb-3">
+                <label for="payerMobile" class="form-label">شماره موبایل</label>
+                <input type="tel" class="form-control" id="payerMobile" placeholder="شماره موبایل خود را وارد کنید" required>
+            </div>
+            <div class="contract-actions">
+                <button type="button" class="btn btn-primary" id="makePaymentBtn">
+                    <i class="bi bi-credit-card me-1"></i> پرداخت و تکمیل قرارداد
+                </button>
+            </div>
+        </div>
+
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">در حال پردازش...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const contractId = urlParams.get('id'); // This is the linkToken
+
+            if (!contractId) {
+                document.querySelector('.container').innerHTML = `
+                    <div class="alert alert-danger text-center">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        قرارداد یافت نشد. لطفاً لینک را بررسی کنید.
+                    </div>
+                `;
+                return;
+            }
+
+            // Fetch contract
+            fetch(`/api/contracts/${contractId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayContract(data.contract);
+                        loadComments(contractId);
+                        initializeSignaturePad();
+                    } else {
+                        showError(data.message || 'خطا در بارگذاری قرارداد');
+                    }
+                })
+                .catch(() => showError('خطا در ارتباط با سرور'));
+
+            function showError(msg) {
+                document.querySelector('.container').innerHTML = `
+                    <div class="alert alert-danger text-center">
+                        <i class="bi bi-exclamation-triangle me-2"></i> ${msg}
+                    </div>
+                `;
+            }
+
+            function displayContract(contract) {
+                document.getElementById('contractTitle').textContent = contract.title || 'بدون عنوان';
+                document.getElementById('contractDate').textContent = contract.createdAt 
+                    ? new Date(contract.createdAt).toLocaleDateString('fa-IR') 
+                    : '-';
+                document.getElementById('contractType').textContent = getContractTypeText(contract.type);
+                document.getElementById('contractContent').textContent = contract.text || 'محتوایی وجود ندارد.';
+                document.getElementById('party1Name').textContent = contract.party1Name || '-';
+                document.getElementById('party2Name').textContent = contract.party2Name || '-';
+                document.getElementById('party1Email').textContent = contract.party1Email || '-';
+                document.getElementById('party2Email').textContent = contract.party2Email || '-';
+                
+                // Payment information
+                if (contract.paymentAmount > 0) {
+                    document.getElementById('paymentAmount').textContent = `${contract.paymentAmount.toLocaleString('fa-IR')} تومان`;
+                    document.getElementById('paymentDescription').textContent = contract.paymentDescription || 'پرداخت مربوط به این قرارداد';
+                    document.getElementById('paymentDeadline').textContent = contract.paymentDeadline 
+                        ? new Date(contract.paymentDeadline).toLocaleDateString('fa-IR') 
+                        : '-';
+                } else {
+                    document.getElementById('paymentAmount').textContent = 'بدون نیاز به پرداخت';
+                    document.getElementById('paymentDescription').textContent = 'این قرارداد نیازی به پرداخت ندارد';
+                    document.getElementById('paymentDeadline').textContent = '-';
+                    document.getElementById('makePaymentBtn').disabled = true;
+                    document.getElementById('makePaymentBtn').textContent = 'این قرارداد نیازی به پرداخت ندارد';
+                }
+                
+                updateContractStatus(contract.status);
+            }
+
+            function getContractTypeText(type) {
+                const types = {
+                    'freelance': 'قرارداد فریلنسری',
+                    'rent': 'قرارداد اجاره',
+                    'service': 'قرارداد خدمات',
+                    'sales': 'قرارداد فروش',
+                    'partnership': 'قرارداد مشارکت',
+                    'custom': 'قرارداد سفارشی'
+                };
+                return types[type] || type;
+            }
+
+            function updateContractStatus(status) {
+                const el = document.getElementById('contractStatus');
+                const party1El = document.getElementById('party1Status');
+                const party2El = document.getElementById('party2Status');
+                
+                el.className = 'status-badge';
+                party1El.className = 'status-badge';
+                party2El.className = 'status-badge';
+                
+                if (status === 'signed' || status === 'paid' || status === 'completed') {
+                    el.textContent = 'امضا شده';
+                    el.classList.add('status-signed');
+                    party1El.textContent = 'امضا شده';
+                    party1El.classList.add('status-signed');
+                    party2El.textContent = 'امضا شده';
+                    party2El.classList.add('status-signed');
+                } else {
+                    el.textContent = 'در انتظار امضا';
+                    el.classList.add('status-pending');
+                    party1El.textContent = 'در انتظار امضا';
+                    party1El.classList.add('status-pending');
+                    party2El.textContent = 'در انتظار امضا';
+                    party2El.classList.add('status-pending');
+                }
+            }
+
+            // Signature Pad
+            let signaturePad;
+            
+            function initializeSignaturePad() {
+                const canvas = document.getElementById('signatureCanvas');
+                signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    penColor: 'rgb(0, 0, 0)'
+                });
+                
+                // Adjust canvas size
+                function resizeCanvas() {
+                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                    canvas.width = canvas.offsetWidth * ratio;
+                    canvas.height = canvas.offsetHeight * ratio;
+                    canvas.getContext('2d').scale(ratio, ratio);
+                    signaturePad.clear();
+                }
+                
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+                
+                // Clear signature button
+                document.getElementById('clearSignatureBtn').addEventListener('click', () => {
+                    signaturePad.clear();
+                });
+                
+                // Sign contract button
+                document.getElementById('signContractBtn').addEventListener('click', () => {
+                    if (signaturePad.isEmpty()) {
+                        alert('لطفاً ابتدا امضا کنید');
+                        return;
+                    }
+                    
+                    const signerName = prompt('نام خود را وارد کنید:');
+                    if (!signerName || signerName.trim() === '') {
+                        alert('نام شما الزامی است');
+                        return;
+                    }
+                    
+                    const signerEmail = prompt('ایمیل خود را وارد کنید:');
+                    if (!signerEmail || signerEmail.trim() === '') {
+                        alert('ایمیل شما الزامی است');
+                        return;
+                    }
+                    
+                    document.getElementById('loadingSpinner').classList.add('active');
+                    
+                    fetch(`/api/contracts/${contractId}/sign`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            signerName: signerName.trim(),
+                            signerEmail: signerEmail.trim(),
+                            signature: signaturePad.toDataURL()
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('loadingSpinner').classList.remove('active');
+                        if (data.success) {
+                            alert('قرارداد با موفقیت امضا شد');
+                            updateContractStatus('signed');
+                        } else {
+                            alert(data.message || 'خطا در امضای قرارداد');
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('loadingSpinner').classList.remove('active');
+                        alert('خطا در ارتباط با سرور');
+                    });
+                });
+            }
+            
+            // Payment button
+            document.getElementById('makePaymentBtn').addEventListener('click', () => {
+                const payerName = document.getElementById('payerName').value.trim();
+                const payerEmail = document.getElementById('payerEmail').value.trim();
+                const payerMobile = document.getElementById('payerMobile').value.trim();
+                
+                if (!payerName || !payerEmail || !payerMobile) {
+                    alert('لطفاً تمام فیلدها را تکمیل کنید');
+                    return;
+                }
+                
+                document.getElementById('loadingSpinner').classList.add('active');
+                
+                fetch(`/api/contracts/${contractId}/payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        payerName,
+                        payerEmail,
+                        payerMobile,
+                        paymentDescription: 'پرداخت قرارداد'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    if (data.success) {
+                        window.location.href = data.payment_url;
+                    } else {
+                        alert(data.message || 'خطا در ایجاد پرداخت');
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    alert('خطا در ارتباط با سرور');
+                });
+            });
+
+            // === COMMENTS LOGIC ===
+            function loadComments(linkToken) {
+                fetch(`/api/contracts/${linkToken}/comments`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && Array.isArray(data.comments) && data.comments.length > 0) {
+                            displayComments(data.comments);
+                        } else {
+                            document.getElementById('commentsList').innerHTML = `
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-chat-square-text fs-1"></i>
+                                    <p class="mt-2">هنوز نظری ثبت نشده است</p>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('commentsList').innerHTML = `
+                            <div class="alert alert-warning text-center">خطا در بارگذاری نظرات</div>
+                        `;
+                    });
+            }
+
+            function displayComments(comments) {
+                const container = document.getElementById('commentsList');
+                const topLevel = comments.filter(c => !c.parentId);
+                const replies = comments.filter(c => c.parentId);
+
+                if (topLevel.length === 0) {
+                    container.innerHTML = `<div class="text-center py-4 text-muted">هنوز نظری ثبت نشده است</div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                topLevel.forEach(comment => {
+                    const el = createCommentElement(comment);
+                    container.appendChild(el);
+
+                    const commentReplies = replies.filter(r => r.parentId === comment.id);
+                    if (commentReplies.length > 0) {
+                        const repliesDiv = document.createElement('div');
+                        repliesDiv.className = 'replies-container';
+                        repliesDiv.id = `replies-${comment.id}`;
+                        repliesDiv.style.display = 'none';
+                        commentReplies.forEach(r => repliesDiv.appendChild(createCommentElement(r, true)));
+                        el.appendChild(repliesDiv);
+
+                        const toggle = document.createElement('div');
+                        toggle.className = 'replies-toggle';
+                        toggle.innerHTML = `<i class="bi bi-chevron-down"></i> <span>${commentReplies.length} پاسخ</span>`;
+                        toggle.onclick = () => {
+                            const isVisible = repliesDiv.style.display !== 'none';
+                            repliesDiv.style.display = isVisible ? 'none' : 'block';
+                            toggle.querySelector('i').className = isVisible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+                        };
+                        el.appendChild(toggle);
+                    }
+                });
+            }
+
+            function createCommentElement(comment, isReply = false) {
+                const div = document.createElement('div');
+                div.className = isReply ? 'comment comment-reply' : 'comment';
+
+                const typeLabels = {
+                    general: 'عمومی',
+                    suggestion: 'پیشنهاد',
+                    correction: 'تصحیح',
+                    approval: 'تایید'
+                };
+                const typeText = typeLabels[comment.type] || comment.type;
+                const typeColor = {
+                    general: 'primary',
+                    suggestion: 'warning',
+                    correction: 'danger',
+                    approval: 'success'
+                }[comment.type] || 'primary';
+
+                const date = comment.createdAt ? new Date(comment.createdAt).toLocaleDateString('fa-IR') : 'نامشخص';
+
+                div.innerHTML = `
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-author">${escapeHtml(comment.authorName)}</span>
+                            <span class="badge bg-${typeColor} bg-opacity-10 me-2">${escapeHtml(typeText)}</span>
+                        </div>
+                        <div class="comment-date">${date}</div>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.text)}</div>
+                    <div class="comment-actions">
+                        <div class="comment-action" onclick="replyToComment('${comment.id}', '${escapeHtml(comment.authorName)}')">
+                            <i class="bi bi-reply"></i> <span>پاسخ</span>
+                        </div>
+                    </div>
+                `;
+                return div;
+            }
+
+            // Prevent XSS
+            function escapeHtml(text) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '<',
+                    '>': '>',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return text.replace(/[&<>"']/g, m => map[m]);
+            }
+
+            // Expose to global for onclick
+            window.replyToComment = function(commentId, authorName) {
+                const form = document.getElementById('commentForm');
+                form.style.display = 'block';
+                form.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('commentText').value = `@${authorName} `;
+                document.getElementById('newCommentForm').setAttribute('data-parent-id', commentId);
+                document.getElementById('commentText').focus();
+            };
+
+            // Form controls
+            document.getElementById('addCommentBtn').addEventListener('click', () => {
+                const form = document.getElementById('commentForm');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                if (form.style.display === 'block') {
+                    document.getElementById('newCommentForm').reset();
+                    document.getElementById('newCommentForm').removeAttribute('data-parent-id');
+                    document.getElementById('commentText').focus();
+                }
+            });
+
+            document.getElementById('cancelCommentBtn').addEventListener('click', () => {
+                document.getElementById('commentForm').style.display = 'none';
+                document.getElementById('newCommentForm').reset();
+                document.getElementById('newCommentForm').removeAttribute('data-parent-id');
+            });
+
+            document.getElementById('newCommentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const text = document.getElementById('commentText').value.trim();
+                const type = document.getElementById('commentType').value;
+                const parentId = this.getAttribute('data-parent-id') || null;
+
+                if (!text) {
+                    alert('لطفاً متن نظر را وارد کنید.');
+                    return;
+                }
+
+                let authorName = prompt('نام خود را وارد کنید:');
+                if (!authorName || authorName.trim() === '') {
+                    alert('نام شما الزامی است.');
+                    return;
+                }
+                authorName = authorName.trim();
+
+                document.getElementById('loadingSpinner').classList.add('active');
+
+                fetch(`/api/contracts/${contractId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, type, authorName, parentId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    if (data.success) {
+                        document.getElementById('commentForm').style.display = 'none';
+                        document.getElementById('newCommentForm').reset();
+                        document.getElementById('newCommentForm').removeAttribute('data-parent-id');
+                        loadComments(contractId);
+                        alert('نظر شما با موفقیت ثبت شد.');
+                    } else {
+                        alert(data.message || 'خطا در ثبت نظر.');
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    alert('خطا در ارتباط با سرور.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

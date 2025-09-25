@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم قراردادهای هوشمند</title>
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.0/Vazirmatn-font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --success-color: #00b894;
+            --danger-color: #d63031;
+            --light-color: #f8f9fa;
+            --dark-color: #2d3436;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 80px 0;
+            border-radius: 0 0 30px 30px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .contract-template {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .contract-template:hover {
+            background-color: #f0f2ff;
+        }
+        
+        .contract-template.selected {
+            background-color: #e8ebff;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .testimonial {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+        
+        .sandbox-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-file-earmark-text-fill text-primary"></i> قراردادهای هوشمند
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">خانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">امکانات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#templates">قراردادها</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials">نظرات کاربران</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="/dashboard" class="btn btn-outline-primary ms-2">ورود / ثبت نام</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">ساخت قراردادهای هوشمند و امن</h1>
+            <p class="lead mb-5">قراردادهای خود را به صورت دیجیتال ایجاد کنید، امضا کنید و پرداخت‌های امن را مدیریت نمایید</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#templates" class="btn btn-light btn-lg px-4">شروع کنید</a>
+                <a href="#features" class="btn btn-outline-light btn-lg px-4">بیشتر بدانید</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center">امکانات سیستم</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-file-earmark-plus"></i>
+                        </div>
+                        <h4>ساخت قرارداد</h4>
+                        <p>با استفاده از قالب‌های آماده، قرارداد خود را در کمتر از چند دقیقه ایجاد کنید</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+                        <h4>ویرایش قرارداد</h4>
+                        <p>متن قرارداد را مطابق نیاز خود ویرایش کرده و شخصی‌سازی کنید</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-share"></i>
+                        </div>
+                        <h4>اشتراک‌گذاری</h4>
+                        <p>لینک اختصاصی قرارداد را برای طرف مقابل ارسال کنید</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-pen-fill"></i>
+                        </div>
+                        <h4>امضای دیجیتال</h4>
+                        <p>طرفین می‌توانند به صورت امن و قانونی قرارداد را امضا کنند</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h4>پرداخت امن</h4>
+                        <p>پرداخت‌های مالی به صورت امن و با امانت تا اجرای کامل قرارداد</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <h4>پیگیری اجرا</h4>
+                        <p>مراحل اجرای قرارداد را به صورت کامل پیگیری و مدیریت کنید</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contract Templates Section -->
+    <section id="templates" class="py-5 bg-light">
+        <div class="container">
+            <div class="sandbox-notice">
+                <i class="bi bi-info-circle"></i> حالت آزمایشی (سندباکس) - هیچ پرداخت واقعی انجام نمی‌شود
+            </div>
+            
+            <h2 class="section-title text-center">قالب‌های قرارداد</h2>
+            <p class="text-center mb-5">قالب مورد نظر خود را انتخاب کرده و قرارداد خود را ایجاد کنید</p>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card contract-template" data-template="freelance">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                    <i class="bi bi-laptop text-primary fs-4"></i>
+                                </div>
+                                <h4 class="card-title mb-0">قرارداد فریلنسری</h4>
+                            </div>
+                            <p class="card-text">قرارداد همکاری با فریلنسرها برای انجام پروژه‌های مختلف</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">پرداخت امن</span>
+                                <i class="bi bi-arrow-left text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card contract-template" data-template="rent">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                    <i class="bi bi-house-door text-primary fs-4"></i>
+                                </div>
+                                <h4 class="card-title mb-0">قرارداد اجاره</h4>
+                            </div>
+                            <p class="card-text">قرارداد اجاره ملک، خودرو یا سایر دارایی‌ها</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">پرداخت امن</span>
+                                <i class="bi bi-arrow-left text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card contract-template" data-template="service">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                    <i class="bi bi-gear text-primary fs-4"></i>
+                                </div>
+                                <h4 class="card-title mb-0">قرارداد خدمات</h4>
+                            </div>
+                            <p class="card-text">قرارداد ارائه خدمات حرفه‌ای و تخصصی</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">پرداخت امن</span>
+                                <i class="bi bi-arrow-left text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card contract-template" data-template="sales">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                    <i class="bi bi-cart text-primary fs-4"></i>
+                                </div>
+                                <h4 class="card-title mb-0">قرارداد فروش</h4>
+                            </div>
+                            <p class="card-text">قرارداد فروش کالا یا محصولات با شرایط مشخص</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">پرداخت امن</span>
+                                <i class="bi bi-arrow-left text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card contract-template" data-template="partnership">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                    <i class="bi bi-people text-primary fs-4"></i>
+                                </div>
+                                <h4 class="card-title mb-0">قرارداد مشارکت</h4>
+                            </div>
+                            <p class="card-text">قرارداد مشارکت در پروژه‌ها یا کسب‌وکارها</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">پرداخت امن</span>
+                                <i class="bi bi-arrow-left text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="card contract-template" data-template="custom">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
+                                    <i class="bi bi-file-earmark-text text-primary fs-4"></i>
+                                </div>
+                                <h4 class="card-title mb-0">قرارداد سفارشی</h4>
+                            </div>
+                            <p class="card-text">ایجاد قرارداد با متن و شرایط کاملاً سفارشی</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">پرداخت امن</span>
+                                <i class="bi bi-arrow-left text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <button id="createContractBtn" class="btn btn-primary btn-lg px-4 disabled">
+                    ایجاد قرارداد <i class="bi bi-arrow-left ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center">نظرات کاربران</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="testimonial">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-3" width="50" height="50" alt="User">
+                            <div>
+                                <h5 class="mb-0">احمد رضایی</h5>
+                                <small class="text-muted">فریلنسر برنامه‌نویس</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"این سیستم به من کمک کرد تا با اطمینان کامل با مشتریانم قرارداد ببندم و پرداخت‌هایم را به صورت امن دریافت کنم."</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-3" width="50" height="50" alt="User">
+                            <div>
+                                <h5 class="mb-0">سارا محمدی</h5>
+                                <small class="text-muted">صاحب کسب‌وکار</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"با استفاده از این سیستم، دیگر نگران پرداخت‌های مشتریان نیستم. همه چیز به صورت شفاف و امن انجام می‌شود."</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="testimonial">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg" class="rounded-circle me-3" width="50" height="50" alt="User">
+                            <div>
+                                <h5 class="mb-0">رضا کریمی</h5>
+                                <small class="text-muted">مشاور املاک</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"قراردادهای اجاره را به سادگی ایجاد می‌کنم و مشتریانم با خیال راحت امضا و پرداخت می‌کنند."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3">قراردادهای هوشمند</h5>
+                    <p>سیتمی برای ایجاد، امضا و مدیریت قراردادهای دیجیتال با پرداخت‌های امن</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-white me-3"><i class="bi bi-telegram fs-5"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-linkedin fs-5"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter fs-5"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">لینک‌های سریع</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">خانه</a></li>
+                        <li class="mb-2"><a href="#features" class="text-white-50 text-decoration-none">امکانات</a></li>
+                        <li class="mb-2"><a href="#templates" class="text-white-50 text-decoration-none">قراردادها</a></li>
+                        <li class="mb-2"><a href="#testimonials" class="text-white-50 text-decoration-none">نظرات</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5 class="mb-3">قالب‌ها</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">فریلنسری</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">اجاره</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">خدمات</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">فروش</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3">تماس با ما</h5>
+                    <p class="text-white-50">برای اطلاعات بیشتر و پشتیبانی با ما در ارتباط باشید</p>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> ۰۲۱-۸۸۸۸۸۸۸۸</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> info@smartcontracts.ir</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> تهران، خیابان ولیعصر</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-white">
+            <div class="text-center">
+                <p class="mb-0 text-white-50">&copy; 2023 قراردادهای هوشمند. تمامی حقوق محفوظ است.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contractTemplates = document.querySelectorAll('.contract-template');
+            const createContractBtn = document.getElementById('createContractBtn');
+            let selectedTemplate = null;
+            
+            // Handle template selection
+            contractTemplates.forEach(template => {
+                template.addEventListener('click', function() {
+                    // Remove selected class from all templates
+                    contractTemplates.forEach(t => t.classList.remove('selected'));
+                    
+                    // Add selected class to clicked template
+                    this.classList.add('selected');
+                    
+                    // Set selected template
+                    selectedTemplate = this.getAttribute('data-template');
+                    
+                    // Enable create button
+                    createContractBtn.classList.remove('disabled');
+                });
+            });
+            
+            // Handle create contract button click
+            createContractBtn.addEventListener('click', function() {
+                if (selectedTemplate) {
+                    // Redirect to contract creation page
+                    window.location.href = `/create-contract?template=${selectedTemplate}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
