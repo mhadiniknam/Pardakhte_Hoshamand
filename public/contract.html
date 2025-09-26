@@ -192,6 +192,26 @@
             margin-left: 5px;
             color: var(--primary-color);
         }
+        .payee-section {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+        .payee-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .payee-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
         .sandbox-notice {
             background-color: #fff3cd;
             color: #856404;
@@ -353,6 +373,22 @@
             color: var(--danger-color);
             background-color: rgba(214, 48, 49, 0.1);
         }
+        .party-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        .party-badge.payer {
+            background-color: rgba(108, 92, 231, 0.1);
+            color: var(--primary-color);
+        }
+        .party-badge.payee {
+            background-color: rgba(0, 184, 148, 0.1);
+            color: var(--success-color);
+        }
         @media (max-width: 768px) {
             .contract-actions {
                 flex-direction: column;
@@ -425,8 +461,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="party-info">
-                            <div class="party-title">طرف اول</div>
-                            <div id="party1Name">-</div>
+                            <div class="party-title">
+                                <span id="party1Name">-</span>
+                                <span class="party-badge payer" id="party1Badge">پرداخت‌کننده</span>
+                            </div>
                             <div id="party1Email">-</div>
                             <div class="mt-2">
                                 <span class="status-badge status-pending" id="party1Status">در انتظار امضا</span>
@@ -435,8 +473,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="party-info">
-                            <div class="party-title">طرف دوم</div>
-                            <div id="party2Name">-</div>
+                            <div class="party-title">
+                                <span id="party2Name">-</span>
+                                <span class="party-badge payee" id="party2Badge">دریافت‌کننده</span>
+                            </div>
                             <div id="party2Email">-</div>
                             <div class="mt-2">
                                 <span class="status-badge status-pending" id="party2Status">در انتظار امضا</span>
@@ -502,8 +542,8 @@
             </div>
         </div>
 
-        <!-- Payment Section -->
-        <div class="payment-section">
+        <!-- Payment Section (for payers) -->
+        <div class="payment-section" id="paymentSection">
             <h3 class="mb-4">اطلاعات پرداخت</h3>
             <div class="payment-info">
                 <div class="payment-amount" id="paymentAmount">0 تومان</div>
@@ -512,6 +552,10 @@
                     <i class="bi bi-calendar-check"></i>
                     <span id="paymentDeadline">-</span>
                 </div>
+            </div>
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                شما به عنوان پرداخت‌کننده در این قرارداد، باید مبلغ مشخص شده را پرداخت کنید.
             </div>
             <div class="mb-3">
                 <label for="payerName" class="form-label">نام پرداخت کننده</label>
@@ -532,6 +576,40 @@
             </div>
         </div>
 
+        <!-- Payee Section (for payees) -->
+        <div class="payee-section" id="payeeSection">
+            <h3 class="mb-4">اطلاعات دریافت</h3>
+            <div class="payee-info">
+                <div class="payee-amount" id="receiveAmount">0 تومان</div>
+                <div class="payment-description" id="receiveDescription">-</div>
+                <div class="payment-deadline">
+                    <i class="bi bi-calendar-check"></i>
+                    <span id="receiveDeadline">-</span>
+                </div>
+            </div>
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i>
+                شما به عنوان دریافت‌کننده در این قرارداد، پس از انجام تعهدات خود، مبلغ قرارداد را دریافت خواهید کرد.
+            </div>
+            <div class="mb-3">
+                <label for="payeeName" class="form-label">نام دریافت کننده</label>
+                <input type="text" class="form-control" id="payeeName" placeholder="نام خود را وارد کنید" required>
+            </div>
+            <div class="mb-3">
+                <label for="payeeEmail" class="form-label">ایمیل</label>
+                <input type="email" class="form-control" id="payeeEmail" placeholder="ایمیل خود را وارد کنید" required>
+            </div>
+            <div class="mb-3">
+                <label for="payeeMobile" class="form-label">شماره موبایل</label>
+                <input type="tel" class="form-control" id="payeeMobile" placeholder="شماره موبایل خود را وارد کنید" required>
+            </div>
+            <div class="contract-actions">
+                <button type="button" class="btn btn-success" id="confirmCompletionBtn">
+                    <i class="bi bi-check-circle me-1"></i> تایید انجام تعهدات
+                </button>
+            </div>
+        </div>
+
         <div class="loading-spinner" id="loadingSpinner">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -545,6 +623,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const contractId = urlParams.get('id'); // This is the linkToken
+            const partyType = urlParams.get('party'); // 'payer' or 'payee'
 
             if (!contractId) {
                 document.querySelector('.container').innerHTML = `
@@ -561,9 +640,22 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        displayContract(data.contract);
+                        displayContract(data.contract, partyType);
                         loadComments(contractId);
                         initializeSignaturePad();
+                        
+                        // Show/hide sections based on party type
+                        if (partyType === 'payer') {
+                            document.getElementById('paymentSection').style.display = 'block';
+                            document.getElementById('payeeSection').style.display = 'none';
+                        } else if (partyType === 'payee') {
+                            document.getElementById('paymentSection').style.display = 'none';
+                            document.getElementById('payeeSection').style.display = 'block';
+                        } else {
+                            // If no party type specified, show both
+                            document.getElementById('paymentSection').style.display = 'block';
+                            document.getElementById('payeeSection').style.display = 'block';
+                        }
                     } else {
                         showError(data.message || 'خطا در بارگذاری قرارداد');
                     }
@@ -578,17 +670,31 @@
                 `;
             }
 
-            function displayContract(contract) {
+            function displayContract(contract, partyType) {
                 document.getElementById('contractTitle').textContent = contract.title || 'بدون عنوان';
                 document.getElementById('contractDate').textContent = contract.createdAt 
                     ? new Date(contract.createdAt).toLocaleDateString('fa-IR') 
                     : '-';
                 document.getElementById('contractType').textContent = getContractTypeText(contract.type);
                 document.getElementById('contractContent').textContent = contract.text || 'محتوایی وجود ندارد.';
+                
+                // Display party information with roles
+                const payerName = contract.payerParty === 'party1' ? contract.party1Name : contract.party2Name;
+                const payeeName = contract.payeeParty === 'party1' ? contract.party1Name : contract.party2Name;
+                
                 document.getElementById('party1Name').textContent = contract.party1Name || '-';
                 document.getElementById('party2Name').textContent = contract.party2Name || '-';
                 document.getElementById('party1Email').textContent = contract.party1Email || '-';
                 document.getElementById('party2Email').textContent = contract.party2Email || '-';
+                
+                // Update party badges
+                if (contract.payerParty === 'party1') {
+                    document.getElementById('party1Badge').textContent = 'پرداخت‌کننده';
+                    document.getElementById('party2Badge').textContent = 'دریافت‌کننده';
+                } else {
+                    document.getElementById('party1Badge').textContent = 'دریافت‌کننده';
+                    document.getElementById('party2Badge').textContent = 'پرداخت‌کننده';
+                }
                 
                 // Payment information
                 if (contract.paymentAmount > 0) {
@@ -597,12 +703,24 @@
                     document.getElementById('paymentDeadline').textContent = contract.paymentDeadline 
                         ? new Date(contract.paymentDeadline).toLocaleDateString('fa-IR') 
                         : '-';
+                    
+                    document.getElementById('receiveAmount').textContent = `${contract.paymentAmount.toLocaleString('fa-IR')} تومان`;
+                    document.getElementById('receiveDescription').textContent = contract.paymentDescription || 'دریافت مربوط به این قرارداد';
+                    document.getElementById('receiveDeadline').textContent = contract.paymentDeadline 
+                        ? new Date(contract.paymentDeadline).toLocaleDateString('fa-IR') 
+                        : '-';
                 } else {
                     document.getElementById('paymentAmount').textContent = 'بدون نیاز به پرداخت';
                     document.getElementById('paymentDescription').textContent = 'این قرارداد نیازی به پرداخت ندارد';
                     document.getElementById('paymentDeadline').textContent = '-';
                     document.getElementById('makePaymentBtn').disabled = true;
                     document.getElementById('makePaymentBtn').textContent = 'این قرارداد نیازی به پرداخت ندارد';
+                    
+                    document.getElementById('receiveAmount').textContent = 'بدون نیاز به پرداخت';
+                    document.getElementById('receiveDescription').textContent = 'این قرارداد نیازی به پرداخت ندارد';
+                    document.getElementById('receiveDeadline').textContent = '-';
+                    document.getElementById('confirmCompletionBtn').disabled = true;
+                    document.getElementById('confirmCompletionBtn').textContent = 'این قرارداد نیازی به پرداخت ندارد';
                 }
                 
                 updateContractStatus(contract.status);
@@ -760,6 +878,28 @@
                     document.getElementById('loadingSpinner').classList.remove('active');
                     alert('خطا در ارتباط با سرور');
                 });
+            });
+
+            // Confirm completion button
+            document.getElementById('confirmCompletionBtn').addEventListener('click', () => {
+                const payeeName = document.getElementById('payeeName').value.trim();
+                const payeeEmail = document.getElementById('payeeEmail').value.trim();
+                const payeeMobile = document.getElementById('payeeMobile').value.trim();
+                
+                if (!payeeName || !payeeEmail || !payeeMobile) {
+                    alert('لطفاً تمام فیلدها را تکمیل کنید');
+                    return;
+                }
+                
+                document.getElementById('loadingSpinner').classList.add('active');
+                
+                // In a real application, you would send this to the server
+                // For demo purposes, we'll just show a success message
+                setTimeout(() => {
+                    document.getElementById('loadingSpinner').classList.remove('active');
+                    alert('تعهدات شما با موفقیت تایید شد. پس از تایید طرف مقابل، مبلغ به حساب شما واریز خواهد شد.');
+                    updateContractStatus('completed');
+                }, 1500);
             });
 
             // === COMMENTS LOGIC ===

@@ -58,14 +58,24 @@ app.post('/api/contracts', (req, res) => {
             paymentOption,
             paymentAmount,
             paymentDeadline,
-            paymentDescription
+            paymentDescription,
+            payerParty,
+            payeeParty
         } = req.body;
         
         // Validate required fields
-        if (!title || !type || !party1Name || !party2Name || !startDate || !text) {
+        if (!title || !type || !party1Name || !party2Name || !startDate || !text || !payerParty || !payeeParty) {
             return res.status(400).json({ 
                 success: false, 
                 message: "لطفاً تمام فیلدهای الزامی را تکمیل کنید" 
+            });
+        }
+        
+        // Validate that payer and payee are different
+        if (payerParty === payeeParty) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "طرف پرداخت‌کننده و دریافت‌کننده نمی‌توانند یکسان باشند" 
             });
         }
         
@@ -85,6 +95,8 @@ app.post('/api/contracts', (req, res) => {
             paymentAmount: paymentAmount ? parseInt(paymentAmount) : 0,
             paymentDeadline,
             paymentDescription,
+            payerParty,
+            payeeParty,
             status: 'draft',
             createdAt: new Date().toISOString(),
             linkToken: generateRandomToken()
@@ -120,12 +132,17 @@ app.post('/api/contracts', (req, res) => {
             escrowPayments.push(escrowPayment);
         }
         
-        // Return the contract with the link token
+        // Generate links for payer and payee
+        const linkPayer = `${req.protocol}://${req.get('host')}/contract?id=${newContract.linkToken}&party=payer`;
+        const linkPayee = `${req.protocol}://${req.get('host')}/contract?id=${newContract.linkToken}&party=payee`;
+        
+        // Return the contract with the link tokens
         res.json({
             success: true,
             contract: newContract,
             escrowPayment: escrowPayment, // Include escrow payment info
-            link: `${req.protocol}://${req.get('host')}/contract?id=${newContract.linkToken}`
+            linkPayer,
+            linkPayee
         });
     } catch (error) {
         console.error('Error creating contract:', error);

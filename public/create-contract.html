@@ -322,6 +322,25 @@
                     </div>
                 </div>
                 
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="payerParty" class="form-label">طرف پرداخت‌کننده</label>
+                        <select class="form-select" id="payerParty" required>
+                            <option value="">انتخاب کنید</option>
+                            <option value="party1">طرف اول</option>
+                            <option value="party2">طرف دوم</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="payeeParty" class="form-label">طرف دریافت‌کننده</label>
+                        <select class="form-select" id="payeeParty" required>
+                            <option value="">انتخاب کنید</option>
+                            <option value="party1">طرف اول</option>
+                            <option value="party2">طرف دوم</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div class="d-flex justify-content-end">
                     <button type="button" class="btn btn-primary" id="nextToStep2">بعدی <i class="bi bi-arrow-left ms-2"></i></button>
                 </div>
@@ -421,7 +440,7 @@
             
             <div class="alert alert-info">
                 <i class="bi bi-info-circle me-2"></i>
-                پس از تایید نهایی، یک لینک اختصاصی برای قرارداد شما ایجاد می‌شود که می‌توانید آن را برای طرف مقابل ارسال کنید.
+                پس از تایید نهایی، لینک‌های اختصاصی برای قرارداد شما ایجاد می‌شود که می‌توانید آن‌ها را برای طرفین ارسال کنید.
             </div>
             
             <div class="mb-4">
@@ -443,6 +462,14 @@
                         روش پرداخت
                         <span id="summaryPayment" class="badge bg-primary rounded-pill">-</span>
                     </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        طرف پرداخت‌کننده
+                        <span id="summaryPayer" class="badge bg-primary rounded-pill">-</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        طرف دریافت‌کننده
+                        <span id="summaryPayee" class="badge bg-primary rounded-pill">-</span>
+                    </li>
                 </ul>
             </div>
             
@@ -454,16 +481,37 @@
             </div>
             
             <div id="generatedLinkSection" style="display: none;">
-                <h5>لینک اختصاصی قرارداد:</h5>
-                <div class="generated-link" id="generatedLink">-</div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-primary" id="copyLinkBtn">
-                        <i class="bi bi-clipboard me-1"></i> کپی لینک
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>لینک اختصاصی برای طرف پرداخت‌کننده</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-2">این لینک را برای شخصی ارسال کنید که باید مبلغ قرارداد را پرداخت کند:</p>
+                        <div class="generated-link" id="generatedLinkPayer">-</div>
+                        <button class="btn btn-outline-primary mt-2" id="copyLinkPayerBtn">
+                            <i class="bi bi-clipboard me-1"></i> کپی لینک پرداخت‌کننده
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-person-check me-2"></i>لینک اختصاصی برای طرف دریافت‌کننده</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-2">این لینک را برای شخصی ارسال کنید که باید مبلغ قرارداد را دریافت کند:</p>
+                        <div class="generated-link" id="generatedLinkPayee">-</div>
+                        <button class="btn btn-outline-success mt-2" id="copyLinkPayeeBtn">
+                            <i class="bi bi-clipboard me-1"></i> کپی لینک دریافت‌کننده
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 mt-4">
+                    <button class="btn btn-outline-primary" id="copyBothLinksBtn">
+                        <i class="bi bi-clipboard-plus me-1"></i> کپی هر دو لینک
                     </button>
-                    <button class="btn btn-outline-primary" id="shareLinkBtn">
-                        <i class="bi bi-share me-1"></i> اشتراک‌گذاری
-                    </button>
-                    <a href="/" class="btn btn-primary">ایجاد قرارداد جدید</a>
+                    <a href="/create-contract" class="btn btn-primary">ایجاد قرارداد جدید</a>
                 </div>
             </div>
             
@@ -494,6 +542,9 @@
                 document.getElementById('contractType').value = templateType;
                 loadContractTemplate(templateType);
             }
+            
+            // Define API base URL
+            const API_BASE_URL = 'http://localhost:3000';
             
             // Step navigation
             const steps = {
@@ -612,31 +663,40 @@
                 createContract();
             });
             
-            // Copy link button
-            document.getElementById('copyLinkBtn').addEventListener('click', function() {
-                const linkText = document.getElementById('generatedLink').innerText;
+            // Copy link button for payer
+            document.getElementById('copyLinkPayerBtn').addEventListener('click', function() {
+                const linkText = document.getElementById('generatedLinkPayer').innerText;
                 navigator.clipboard.writeText(linkText).then(() => {
                     this.innerHTML = '<i class="bi bi-check me-1"></i> کپی شد';
                     setTimeout(() => {
-                        this.innerHTML = '<i class="bi bi-clipboard me-1"></i> کپی لینک';
+                        this.innerHTML = '<i class="bi bi-clipboard me-1"></i> کپی لینک پرداخت‌کننده';
                     }, 2000);
                 });
             });
             
-            // Share link button
-            document.getElementById('shareLinkBtn').addEventListener('click', function() {
-                const linkText = document.getElementById('generatedLink').innerText;
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'قرارداد برای امضا',
-                        text: 'لطفاً این قرارداد را امضا کنید',
-                        url: linkText
-                    });
-                } else {
-                    // Fallback for browsers that don't support Web Share API
-                    alert('لینک کپی شد: ' + linkText);
-                    navigator.clipboard.writeText(linkText);
-                }
+            // Copy link button for payee
+            document.getElementById('copyLinkPayeeBtn').addEventListener('click', function() {
+                const linkText = document.getElementById('generatedLinkPayee').innerText;
+                navigator.clipboard.writeText(linkText).then(() => {
+                    this.innerHTML = '<i class="bi bi-check me-1"></i> کپی شد';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-clipboard me-1"></i> کپی لینک دریافت‌کننده';
+                    }, 2000);
+                });
+            });
+            
+            // Copy both links button
+            document.getElementById('copyBothLinksBtn').addEventListener('click', function() {
+                const payerLink = document.getElementById('generatedLinkPayer').innerText;
+                const payeeLink = document.getElementById('generatedLinkPayee').innerText;
+                const bothLinks = `لینک پرداخت‌کننده:\n${payerLink}\n\nلینک دریافت‌کننده:\n${payeeLink}`;
+                
+                navigator.clipboard.writeText(bothLinks).then(() => {
+                    this.innerHTML = '<i class="bi bi-check me-1"></i> کپی شد';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-clipboard-plus me-1"></i> کپی هر دو لینک';
+                    }, 2000);
+                });
             });
             
             // Load contract template
@@ -824,7 +884,9 @@
                     'contractType',
                     'party1Name',
                     'party2Name',
-                    'startDate'
+                    'startDate',
+                    'payerParty',
+                    'payeeParty'
                 ];
                 
                 let isValid = true;
@@ -838,6 +900,15 @@
                         field.classList.remove('is-invalid');
                     }
                 });
+                
+                // Validate that payer and payee are different
+                const payerParty = document.getElementById('payerParty').value;
+                const payeeParty = document.getElementById('payeeParty').value;
+                
+                if (payerParty === payeeParty) {
+                    alert('طرف پرداخت‌کننده و دریافت‌کننده نمی‌توانند یکسان باشند');
+                    isValid = false;
+                }
                 
                 return isValid;
             }
@@ -895,6 +966,25 @@
                 } else {
                     document.getElementById('summaryPayment').textContent = '-';
                 }
+                
+                // Update payer and payee information
+                const payerParty = document.getElementById('payerParty');
+                const payeeParty = document.getElementById('payeeParty');
+                
+                if (payerParty.value && payeeParty.value) {
+                    const payerName = payerParty.value === 'party1' 
+                        ? document.getElementById('party1Name').value 
+                        : document.getElementById('party2Name').value;
+                    const payeeName = payeeParty.value === 'party1' 
+                        ? document.getElementById('party1Name').value 
+                        : document.getElementById('party2Name').value;
+                        
+                    document.getElementById('summaryPayer').textContent = payerName;
+                    document.getElementById('summaryPayee').textContent = payeeName;
+                } else {
+                    document.getElementById('summaryPayer').textContent = '-';
+                    document.getElementById('summaryPayee').textContent = '-';
+                }
             }
             
             // Create contract
@@ -916,11 +1006,13 @@
                     paymentOption: document.querySelector('input[name="paymentOption"]:checked').value,
                     paymentAmount: document.getElementById('paymentAmount').value,
                     paymentDeadline: document.getElementById('paymentDeadline').value,
-                    paymentDescription: document.getElementById('paymentDescription').value
+                    paymentDescription: document.getElementById('paymentDescription').value,
+                    payerParty: document.getElementById('payerParty').value,
+                    payeeParty: document.getElementById('payeeParty').value
                 };
                 
                 // Send data to server
-                fetch('/api/contracts', {
+                fetch(`${API_BASE_URL}/api/contracts`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -933,8 +1025,13 @@
                     document.getElementById('loadingSpinner').classList.remove('active');
                     
                     if (data.success) {
-                        // Display the generated link
-                        document.getElementById('generatedLink').textContent = data.link;
+                        // Display the generated links
+                        if (data.linkPayer) {
+                            document.getElementById('generatedLinkPayer').textContent = data.linkPayer;
+                        }
+                        if (data.linkPayee) {
+                            document.getElementById('generatedLinkPayee').textContent = data.linkPayee;
+                        }
                         document.getElementById('generatedLinkSection').style.display = 'block';
                         
                         // Hide the create button
