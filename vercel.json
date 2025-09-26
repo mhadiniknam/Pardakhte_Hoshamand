@@ -32,5 +32,10 @@
         "src": "/(.*)",
         "dest": "public/$1"
       }
-    ]
+    ],
+    "env": {
+      "ZARINPAL_MERCHANT_ID": "@zarinpal_merchant_id",
+      "ZARINPAL_SANDBOX": "true",
+      "ZARINPAL_CALLBACK_URL": "/api/payment-verify"
+    }
   }
