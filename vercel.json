@@ -1,0 +1,36 @@
+{
+    "version": 2,
+    "name": "pardakhte-hoshamand",
+    "builds": [
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "public/**",
+        "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "server.js"
+      },
+      {
+        "src": "/dashboard",
+        "dest": "public/dashboard.html"
+      },
+      {
+        "src": "/create-contract",
+        "dest": "public/create-contract.html"
+      },
+      {
+        "src": "/contract",
+        "dest": "public/contract.html"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "public/$1"
+      }
+    ]
+  }
