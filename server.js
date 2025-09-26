@@ -13,8 +13,8 @@ app.use(express.static('public'));
 // Configuration - Using sandbox mode
 const MERCHANT_ID = "4b90fe3f-360f-40c6-b092-3be91e41fc99"; // Your sandbox merchant ID
 // const CALLBACK_URL = `http://localhost:${PORT}/api/payment-verify`; // Localhost callback
-// const CALLBACK_URL = `https://pardakhtehoshamand-production.up.railway.app/api/payment-verify`;
-const CALLBACK_URL = process.env.CALLBACK_URL
+const CALLBACK_URL = `https://pardakhtehoshamand-production.up.railway.app/api/payment-verify`;
+// const CALLBACK_URL = process.env.CALLBACK_URL
 const IS_SANDBOX = true; // Set to true for sandbox mode
 
 // In-memory storage for transaction amounts, contracts, and comments
